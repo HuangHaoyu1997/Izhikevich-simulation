@@ -1,3 +1,7 @@
+% Created on 2021年1月29日19:40
+% @author: Haoyu Huang
+% Python 3.6.2
+
 Ne = 800;
 Ni = 200;
 re = rand(Ne,1);

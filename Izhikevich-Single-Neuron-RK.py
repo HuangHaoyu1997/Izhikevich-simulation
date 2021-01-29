@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on 2021年1月29日19:40
+@author: Haoyu Huang
+Python 3.6.2
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import time
