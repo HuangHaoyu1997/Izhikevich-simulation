@@ -33,9 +33,9 @@ def function(value,I):
     d2 = a*(b*value[0] - value[1])
     return np.array(d1),np.array(d2)
 
-def runge_ketta(f,h,y_in,I,method='RK41'):
+def runge_ketta(f, h, y_in, I, method='RK41'):
     '''
-    龙格库塔法求解Izhikevich模型，所有的数据为np.array类型,方便计算
+    龙格库塔法求解Izhikevich模型,所有的数据为np.array类型
     :param f:函数
     :param h:步长
     :param y_in:初始值

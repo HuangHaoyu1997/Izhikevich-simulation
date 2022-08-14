@@ -16,13 +16,13 @@ time_span = 500 # 仿真步长
 re = np.random.rand(Ne,1) 
 ri = np.random.rand(Ni,1)
 
-a = np.concatenate((0.02*np.ones((Ne,1)),0.02+0.08*ri)) # 通过随机数生成参数不同的1000个神经元
-b = np.concatenate((0.2*np.ones((Ne,1)),0.25-0.05*ri))
-c = np.concatenate((-65+15*re**2,-65*np.ones((Ni,1))))
-d = np.concatenate((8-6*re**2,2*np.ones((Ni,1))))
-S = np.concatenate((0.5*np.random.rand(Ne+Ni,Ne),-np.random.rand(Ne+Ni,Ni)),1) # 每个Neuron都与其余999个相连，但兴奋性Neuron的权重>0,抑制性Neuron权重<0
+a = np.concatenate((0.02*np.ones((Ne,1)), 0.02+0.08*ri)) # 通过随机数生成参数不同的1000个神经元
+b = np.concatenate((0.2*np.ones((Ne,1)), 0.25-0.05*ri))
+c = np.concatenate((-65 + 15 * re**2, -65*np.ones((Ni,1))))
+d = np.concatenate((8 - 6 * re**2, 2*np.ones((Ni,1))))
+S = np.concatenate((0.5 * np.random.rand(Ne + Ni, Ne), -np.random.rand(Ne + Ni, Ni)), 1) # 每个Neuron都与其余999个相连，但兴奋性Neuron的权重>0,抑制性Neuron权重<0
 
-v = -65*np.ones((Ne+Ni,1)) # 动力学方程的初始状态
+v = -65*np.ones((Ne + Ni, 1)) # 动力学方程的初始状态
 u = b*v
 firings = np.array([[0,0]])
 for t in range(time_span):
