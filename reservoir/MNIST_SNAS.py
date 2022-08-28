@@ -36,7 +36,6 @@ prefs.codegen.target = "numpy"
 start_scope()
 np.random.seed(100)
 data_path = '/home/hhy/project/Izhikevich-simulation/data/MNIST/raw/' # '../../../Data/MNIST_data/'
-
 ###################################
 # -----simulation parameter setting-------
 coding_n = 3
@@ -71,15 +70,14 @@ data_test_s, label_test = MNIST.get_series_data_list(df_en_test, is_group=True)
 
 # -------get numpy random state------------
 np_state = np.random.get_state()
-print(np_state)
 
 ############################################
 # ---- define network run function----
 def run_net(inputs, **parameter):
     """
-        run_net(inputs, parameter)
-            Parameters = [R, p_inE/I, f_in, f_EE, f_EI, f_IE, f_II, tau_ex, tau_inh]
-            ----------
+    run_net(inputs, parameter)
+        Parameters = [R, p_inE/I, f_in, f_EE, f_EI, f_IE, f_II, tau_ex, tau_inh]
+        ----------
     """
 
     # ---- set numpy random state for each run----
@@ -149,31 +147,38 @@ def run_net(inputs, **parameter):
     '''
 
     # -----Neurons and Synapses setting-------
-    Input = NeuronGroup(n_input, neuron_in, threshold='I > 0', method='euler', refractory=0 * ms,
+    Input = NeuronGroup(n_input, 
+                        neuron_in, 
+                        threshold='I > 0', 
+                        method='euler', 
+                        refractory=0 * ms,
                         name='neurongroup_input')
 
-    G_ex = NeuronGroup(n_ex, neuron, threshold='v > 15', reset='v = 13.5', method='euler', refractory=3 * ms,
+    G_ex = NeuronGroup(n_ex, 
+                       neuron, 
+                       threshold='v > 15', 
+                       reset='v = 13.5', 
+                       method='euler', 
+                       refractory=3 * ms,
                        name='neurongroup_ex')
 
-    G_inh = NeuronGroup(n_inh, neuron, threshold='v > 15', reset='v = 13.5', method='euler', refractory=2 * ms,
+    G_inh = NeuronGroup(n_inh, 
+                        neuron, 
+                        threshold='v > 15', 
+                        reset='v = 13.5', 
+                        method='euler', 
+                        refractory=2 * ms,
                         name='neurongroup_in')
 
     G_readout = NeuronGroup(n_read, neuron_read, method='euler', name='neurongroup_read')
 
     S_inE = Synapses(Input, G_ex, synapse, on_pre=on_pre_ex, method='euler', name='synapses_inE')
-
     S_inI = Synapses(Input, G_inh, synapse, on_pre=on_pre_ex, method='euler', name='synapses_inI')
-
     S_EE = Synapses(G_ex, G_ex, synapse, on_pre=on_pre_ex, method='euler', name='synapses_EE')
-
     S_EI = Synapses(G_ex, G_inh, synapse, on_pre=on_pre_ex, method='euler', name='synapses_EI')
-
     S_IE = Synapses(G_inh, G_ex, synapse, on_pre=on_pre_inh, method='euler', name='synapses_IE')
-
     S_II = Synapses(G_inh, G_inh, synapse, on_pre=on_pre_inh, method='euler', name='synapses_I')
-
     S_E_readout = Synapses(G_ex, G_readout, 'w = 1 : 1', on_pre=on_pre_ex, method='euler')
-
     S_I_readout = Synapses(G_inh, G_readout, 'w = 1 : 1', on_pre=on_pre_inh, method='euler')
 
     # -------initialization of neuron parameters----------
@@ -268,11 +273,19 @@ if __name__ == '__main__':
     core = 8
     pool = Pool(core)
     parameters = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
-    bounds = {'R': (0.0001, 1), 'p_in': (0.0001, 1), 'f_in': (0.0001, 1), 'f_EE': (0.0001, 1), 'f_EI': (0.0001, 1),
-              'f_IE': (0.0001, 1), 'f_II': (0.0001, 1), 'tau_ex': (0.0001, 1), 'tau_inh': (0.0001, 1)}
+    bounds = {'R': (0.0001, 1), 
+              'p_in': (0.0001, 1), 
+              'f_in': (0.0001, 1), 
+              'f_EE': (0.0001, 1), 
+              'f_EI': (0.0001, 1),
+              'f_IE': (0.0001, 1), 
+              'f_II': (0.0001, 1), 
+              'tau_ex': (0.0001, 1), 
+              'tau_inh': (0.0001, 1),
+              }
     parameters_search.func.keys = list(bounds.keys())
 
-    LHS_path = './LHS_MNIST.dat'
+    LHS_path = './Results_Record.dat' # './LHS_MNIST.dat'
     SNAS = 'SAES'
 
     # -------parameters search---------------

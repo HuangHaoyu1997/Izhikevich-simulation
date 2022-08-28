@@ -27,7 +27,6 @@ class MNIST_classification(BaseFunctions):
         self.duration = duration
 
     def load_Data_MNIST(self, n, path_value, path_label, is_norm=True):
-        print('111:', path_value, path_label)
         with open(path_value, 'rb') as f1:
             buf1 = f1.read()
         with open(path_label, 'rb') as f2:
@@ -52,10 +51,10 @@ class MNIST_classification(BaseFunctions):
         return df
 
     def load_Data_MNIST_all(self, path, is_norm=True):
-        self.train = self.load_Data_MNIST(60000, path + 'train-images.idx3-ubyte',
-                                          path + 'train-labels.idx1-ubyte', is_norm)
-        self.test = self.load_Data_MNIST(10000, path + 't10k-images.idx3-ubyte',
-                                         path + 't10k-labels.idx1-ubyte', is_norm)
+        self.train = self.load_Data_MNIST(60000, path + 'train-images-idx3-ubyte',
+                                          path + 'train-labels-idx1-ubyte', is_norm)
+        self.test = self.load_Data_MNIST(10000, path + 't10k-images-idx3-ubyte',
+                                         path + 't10k-labels-idx1-ubyte', is_norm)
 
     def select_data(self, fraction, data_frame, is_order=True, **kwargs):
         try:
