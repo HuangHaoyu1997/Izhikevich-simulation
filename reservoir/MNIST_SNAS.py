@@ -35,7 +35,7 @@ warnings.filterwarnings("ignore")
 prefs.codegen.target = "numpy"
 start_scope()
 np.random.seed(100)
-data_path = '/home/hhy/project/Izhikevich-simulation/data/MNIST/raw/' # '../../../Data/MNIST_data/'
+data_path = './data/MNIST/raw/' # '../../../Data/MNIST_data/'
 ###################################
 # -----simulation parameter setting-------
 coding_n = 3

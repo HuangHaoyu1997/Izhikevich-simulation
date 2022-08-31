@@ -65,6 +65,10 @@ class MathFunctions():
         pass
 
     def gamma(self, a, size):
+        '''
+        a(alpha)是gamma分布的形状参数shape parameter
+        beta称为逆尺度参数
+        '''
         return sp.stats.gamma.rvs(a, size=size)
 
 

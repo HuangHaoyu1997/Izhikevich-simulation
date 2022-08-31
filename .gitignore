@@ -2,3 +2,11 @@
 .DS_Store
 /data
 /.history
+reservoir/data/MNIST/raw/t10k-images-idx3-ubyte
+*.gz
+reservoir/data/MNIST/raw/train-labels-idx1-ubyte
+reservoir/data/MNIST/raw/train-images-idx3-ubyte
+reservoir/data/MNIST/raw/t10k-labels-idx1-ubyte
+*.pyc
+*.pyc
+reservoir/src/__pycache__/dataloader.cpython-310.pyc
