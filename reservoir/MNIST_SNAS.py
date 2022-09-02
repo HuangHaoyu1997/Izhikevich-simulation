@@ -234,12 +234,14 @@ def run_net(inputs, **parameter):
 @AddParaName
 def parameters_search(**parameter):
     # ------parallel run for train-------
-    states_train_list = pool.map(partial(run_net, **parameter), [(x) for x in zip(data_train_s, label_train)])
+    states_train_list = pool.map(partial(run_net, **parameter), 
+                                 [(x) for x in zip(data_train_s, label_train)])
     # ------parallel run for validation-------
     states_validation_list = pool.map(partial(run_net, **parameter),
                                       [(x) for x in zip(data_validation_s, label_validation)])
     # ----parallel run for test--------
-    states_test_list = pool.map(partial(run_net, **parameter), [(x) for x in zip(data_test_s, label_test)])
+    states_test_list = pool.map(partial(run_net, **parameter), 
+                                [(x) for x in zip(data_test_s, label_test)])
     # ------Readout---------------
     states_train, states_validation, states_test, _label_train, _label_validation, _label_test = [], [], [], [], [], []
     for train in states_train_list:
@@ -311,7 +313,7 @@ if __name__ == '__main__':
     elif SNAS == 'SAES':
         saes = SAES(parameters_search, 'ei', parameters, 0.5,
                     **{'ftarget': -1e+3, 'bounds': bounds, 'maxiter': 500,'tolstagnation': 500})
-        saes.run_best_strategy(50, 1, 2, LHS_path=LHS_path)
+        saes.run_best_strategy(50, 1, 2, LHS_path=None)
 
     elif SNAS == 'CMA':
         res = cma.fmin(parameters_search, parameters, 0.5,
