@@ -23,8 +23,8 @@ from sklearn.model_selection import train_test_split
 class MNIST_classification(BaseFunctions):
     def __init__(self, shape, duration):
         super().__init__()
-        self.shape = shape
-        self.duration = duration
+        self.shape = shape # (1, 784)
+        self.duration = duration # 30
 
     def load_Data_MNIST(self, n, path_value, path_label, is_norm=True):
         with open(path_value, 'rb') as f1:
@@ -79,6 +79,10 @@ class MNIST_classification(BaseFunctions):
         return encoding
 
     def _encoding_cos_rank_ignore_0(self, x, n, A):
+        '''
+        余弦编码函数
+        A: coding_duration 30
+        '''
         encoding = np.zeros((x.shape[0] * A, n * x.shape[1]), dtype='<i1')
         for i in range(int(n)):
             trans_cos = np.around(0.5 * A * (np.cos(x + np.pi * (i / n)) + 1)).clip(0, A - 1)

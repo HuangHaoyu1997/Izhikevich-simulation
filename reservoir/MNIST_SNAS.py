@@ -42,8 +42,9 @@ coding_n = 3           # cos编码基函数数量
 MNIST_shape = (1, 784)
 coding_duration = 30   # 编码序列的长度
 duration = coding_duration * MNIST_shape[0] # 30
-F_train = 0.05
-F_validation = 0.00833333
+
+F_train = 0.05 # 60000*0.05=3000
+F_validation = 0.00833333 # 60000 * 0.00833333 = 500
 F_test = 0.05
 Dt = defaultclock.dt = 1 * ms
 
@@ -56,8 +57,7 @@ MNIST = MNIST_classification(MNIST_shape, duration)
 # -------data initialization----------------------
 MNIST.load_Data_MNIST_all(data_path)
 df_train_validation = MNIST.select_data(F_train + F_validation, MNIST.train)
-df_train, df_validation = train_test_split(df_train_validation, test_size=F_validation / (F_validation + F_train),
-                                           random_state=42)
+df_train, df_validation = train_test_split(df_train_validation, test_size=F_validation / (F_validation + F_train), random_state=42)
 df_test = MNIST.select_data(F_test, MNIST.test)
 
 df_en_train = MNIST.encoding_latency_MNIST(MNIST._encoding_cos_rank_ignore_0, df_train, coding_n)
@@ -255,6 +255,9 @@ def run_net(inputs, **parameter):
 @Timelog
 @AddParaName
 def parameters_search(**parameter):
+    '''
+    return: error rate越低越好
+    '''
     # ------parallel run for train-------
     states_train_list = pool.map(partial(run_net, **parameter), 
                                  [(x) for x in zip(data_train_s, label_train)])
@@ -270,8 +273,8 @@ def parameters_search(**parameter):
     # ------Readout---------------
     states_train, states_validation, states_test, _label_train, _label_validation, _label_test = [], [], [], [], [], []
     for train in states_train_list:
-        states_train.append(train[0])
-        _label_train.append(train[1])
+        states_train.append(train[0]) # inference
+        _label_train.append(train[1]) # ground truth label
     for validation in states_validation_list:
         states_validation.append(validation[0])
         _label_validation.append(validation[1])
@@ -302,6 +305,7 @@ def parameters_search(**parameter):
 
 ##########################################
 # -------optimizer settings---------------
+
 if __name__ == '__main__':
     core = 8
     pool = Pool(core)
@@ -342,8 +346,15 @@ if __name__ == '__main__':
         )
 
     elif SNAS == 'SAES':
-        saes = SAES(parameters_search, 'ei', parameters, 0.5,
-                    **{'ftarget': -1e+3, 'bounds': bounds, 'maxiter': 500,'tolstagnation': 500})
+        saes = SAES(f=parameters_search, 
+                    acquisition='ei', 
+                    x0=parameters, 
+                    sigma0=0.5,
+                    **{'ftarget': -1e+3, 
+                       'bounds': bounds, 
+                       'maxiter': 500,
+                       'tolstagnation': 500
+                       })
         saes.run_best_strategy(50, 1, 2, LHS_path=None)
 
     elif SNAS == 'CMA':

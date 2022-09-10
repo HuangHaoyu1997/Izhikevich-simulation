@@ -10,3 +10,4 @@ reservoir/data/MNIST/raw/t10k-labels-idx1-ubyte
 *.pyc
 *.pyc
 reservoir/src/__pycache__/dataloader.cpython-310.pyc
+*.pkl

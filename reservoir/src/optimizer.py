@@ -393,6 +393,7 @@ class SAES():
             self.es.tell(X[-self.es.popsize:], fit[-self.es.popsize:])  # initial the CMA-ES model
             self.es.logger.add()  # update the log
             self.es.disp()
+        
         self.optimizer._gp.fit(self.optimizer._space.params, self.optimizer._space.target)  # initialize the BO model
         estimation = 1  # counter
         while not self.es.stop():
