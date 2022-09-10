@@ -1,0 +1,16 @@
+comment: ''
+commit: d421c3ba1e3e1f5e03dc46728416edcbdb6f0113
+commit_message: '1'
+is_dirty: false
+load_run: null
+name: diffuse
+notes: ''
+python_file: c:\Users\44670\Documents\GitHub\Izhikevich-simulation\diffusion.py
+repo_remotes:
+- https://github.com/HuangHaoyu1997/Izhikevich-simulation.git
+start_step: 0
+tags:
+- diffuse
+trial_date: '2022-09-10'
+trial_time: '12:27:13'
+uuid: d786b1af30c011edb505ccd9ac19d632

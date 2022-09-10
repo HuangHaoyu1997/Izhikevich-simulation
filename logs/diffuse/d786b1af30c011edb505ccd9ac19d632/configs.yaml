@@ -1,0 +1,344 @@
+batch_size:
+  computed: 64
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: batch_size
+  options: []
+  order: 9
+  type: <class 'int'>
+  value: null
+channel_multipliers:
+  computed:
+  - 1
+  - 2
+  - 2
+  - 4
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: channel_multipliers
+  options: []
+  order: 2
+  type: typing.List[int]
+  value: null
+data_loader:
+  computed: <torch.utils.data.dataloader.DataLoader object at 0x000001EB477361A0>
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: data_loader
+  options: []
+  order: 12
+  type: <class 'torch.utils.data.dataloader.DataLoader'>
+  value: <torch.utils.data.dataloader.DataLoader object at 0x000001EB477361A0>
+dataset:
+  computed: "Dataset MNISTDataset\n    Number of datapoints: 60000\n    Root location:\
+    \ C:\\Users\\44670\\Documents\\GitHub\\Izhikevich-simulation\\data\n    Split:\
+    \ Train\n    StandardTransform\nTransform: Compose(\n               Resize(size=32,\
+    \ interpolation=bilinear, max_size=None, antialias=None)\n               ToTensor()\n\
+    \           )"
+  is_explicitly_specified: true
+  is_hyperparam: null
+  is_meta: null
+  name: dataset
+  options:
+  - CelebA
+  - MNIST
+  order: 7
+  type: <class 'torch.utils.data.dataset.Dataset'>
+  value: MNIST
+device:
+  computed: cpu
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: device
+  options: []
+  order: 4
+  type: <class 'torch.device'>
+  value: null
+device.cuda_device:
+  computed: 0
+  is_explicitly_specified: false
+  is_hyperparam: false
+  is_meta: null
+  name: cuda_device
+  options: []
+  order: 3
+  type: <class 'int'>
+  value: null
+device.device:
+  computed: cpu
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: device
+  options:
+  - _device
+  order: 0
+  type: <class 'torch.device'>
+  value: null
+device.device_info:
+  computed: CPU
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: device_info
+  options:
+  - _device_info
+  order: 1
+  type: <class 'labml_helpers.device.DeviceInfo'>
+  value: null
+device.use_cuda:
+  computed: true
+  is_explicitly_specified: false
+  is_hyperparam: false
+  is_meta: null
+  name: use_cuda
+  options: []
+  order: 2
+  type: <class 'bool'>
+  value: null
+diffusion:
+  computed: <labml_nn.diffusion.ddpm.DenoiseDiffusion object at 0x000001EB4762AEC0>
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: diffusion
+  options: []
+  order: 14
+  type: <class 'labml_nn.diffusion.ddpm.DenoiseDiffusion'>
+  value: <labml_nn.diffusion.ddpm.DenoiseDiffusion object at 0x000001EB4762AEC0>
+epochs:
+  computed: 100
+  is_explicitly_specified: true
+  is_hyperparam: null
+  is_meta: null
+  name: epochs
+  options: []
+  order: 11
+  type: <class 'int'>
+  value: 100
+eps_model:
+  computed: "UNet(\n  (image_proj): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1),\
+    \ padding=(1, 1))\n  (time_emb): TimeEmbedding(\n    (lin1): Linear(in_features=64,\
+    \ out_features=256, bias=True)\n    (act): Swish()\n    (lin2): Linear(in_features=256,\
+    \ out_features=256, bias=True)\n  )\n  (down): ModuleList(\n    (0): DownBlock(\n\
+    \      (res): ResidualBlock(\n        (norm1): GroupNorm(32, 64, eps=1e-05, affine=True)\n\
+    \        (act1): Swish()\n        (conv1): Conv2d(64, 64, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 64, eps=1e-05,\
+    \ affine=True)\n        (act2): Swish()\n        (conv2): Conv2d(64, 64, kernel_size=(3,\
+    \ 3), stride=(1, 1), padding=(1, 1))\n        (shortcut): Identity()\n       \
+    \ (time_emb): Linear(in_features=256, out_features=64, bias=True)\n      )\n \
+    \     (attn): Identity()\n    )\n    (1): DownBlock(\n      (res): ResidualBlock(\n\
+    \        (norm1): GroupNorm(32, 64, eps=1e-05, affine=True)\n        (act1): Swish()\n\
+    \        (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1,\
+    \ 1))\n        (norm2): GroupNorm(32, 64, eps=1e-05, affine=True)\n        (act2):\
+    \ Swish()\n        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1),\
+    \ padding=(1, 1))\n        (shortcut): Identity()\n        (time_emb): Linear(in_features=256,\
+    \ out_features=64, bias=True)\n      )\n      (attn): Identity()\n    )\n    (2):\
+    \ Downsample(\n      (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2),\
+    \ padding=(1, 1))\n    )\n    (3): DownBlock(\n      (res): ResidualBlock(\n \
+    \       (norm1): GroupNorm(32, 64, eps=1e-05, affine=True)\n        (act1): Swish()\n\
+    \        (conv1): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1,\
+    \ 1))\n        (norm2): GroupNorm(32, 128, eps=1e-05, affine=True)\n        (act2):\
+    \ Swish()\n        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1),\
+    \ padding=(1, 1))\n        (shortcut): Conv2d(64, 128, kernel_size=(1, 1), stride=(1,\
+    \ 1))\n        (time_emb): Linear(in_features=256, out_features=128, bias=True)\n\
+    \      )\n      (attn): Identity()\n    )\n    (4): DownBlock(\n      (res): ResidualBlock(\n\
+    \        (norm1): GroupNorm(32, 128, eps=1e-05, affine=True)\n        (act1):\
+    \ Swish()\n        (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1),\
+    \ padding=(1, 1))\n        (norm2): GroupNorm(32, 128, eps=1e-05, affine=True)\n\
+    \        (act2): Swish()\n        (conv2): Conv2d(128, 128, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (shortcut): Identity()\n        (time_emb):\
+    \ Linear(in_features=256, out_features=128, bias=True)\n      )\n      (attn):\
+    \ Identity()\n    )\n    (5): Downsample(\n      (conv): Conv2d(128, 128, kernel_size=(3,\
+    \ 3), stride=(2, 2), padding=(1, 1))\n    )\n    (6): DownBlock(\n      (res):\
+    \ ResidualBlock(\n        (norm1): GroupNorm(32, 128, eps=1e-05, affine=True)\n\
+    \        (act1): Swish()\n        (conv1): Conv2d(128, 256, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 256, eps=1e-05,\
+    \ affine=True)\n        (act2): Swish()\n        (conv2): Conv2d(256, 256, kernel_size=(3,\
+    \ 3), stride=(1, 1), padding=(1, 1))\n        (shortcut): Conv2d(128, 256, kernel_size=(1,\
+    \ 1), stride=(1, 1))\n        (time_emb): Linear(in_features=256, out_features=256,\
+    \ bias=True)\n      )\n      (attn): Identity()\n    )\n    (7): DownBlock(\n\
+    \      (res): ResidualBlock(\n        (norm1): GroupNorm(32, 256, eps=1e-05, affine=True)\n\
+    \        (act1): Swish()\n        (conv1): Conv2d(256, 256, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 256, eps=1e-05,\
+    \ affine=True)\n        (act2): Swish()\n        (conv2): Conv2d(256, 256, kernel_size=(3,\
+    \ 3), stride=(1, 1), padding=(1, 1))\n        (shortcut): Identity()\n       \
+    \ (time_emb): Linear(in_features=256, out_features=256, bias=True)\n      )\n\
+    \      (attn): Identity()\n    )\n    (8): Downsample(\n      (conv): Conv2d(256,\
+    \ 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))\n    )\n    (9): DownBlock(\n\
+    \      (res): ResidualBlock(\n        (norm1): GroupNorm(32, 256, eps=1e-05, affine=True)\n\
+    \        (act1): Swish()\n        (conv1): Conv2d(256, 1024, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 1024, eps=1e-05,\
+    \ affine=True)\n        (act2): Swish()\n        (conv2): Conv2d(1024, 1024, kernel_size=(3,\
+    \ 3), stride=(1, 1), padding=(1, 1))\n        (shortcut): Conv2d(256, 1024, kernel_size=(1,\
+    \ 1), stride=(1, 1))\n        (time_emb): Linear(in_features=256, out_features=1024,\
+    \ bias=True)\n      )\n      (attn): AttentionBlock(\n        (norm): GroupNorm(32,\
+    \ 1024, eps=1e-05, affine=True)\n        (projection): Linear(in_features=1024,\
+    \ out_features=3072, bias=True)\n        (output): Linear(in_features=1024, out_features=1024,\
+    \ bias=True)\n      )\n    )\n    (10): DownBlock(\n      (res): ResidualBlock(\n\
+    \        (norm1): GroupNorm(32, 1024, eps=1e-05, affine=True)\n        (act1):\
+    \ Swish()\n        (conv1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1,\
+    \ 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 1024, eps=1e-05, affine=True)\n\
+    \        (act2): Swish()\n        (conv2): Conv2d(1024, 1024, kerne [[...]]"
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: eps_model
+  options: []
+  order: 5
+  type: <class 'labml_nn.diffusion.ddpm.unet.UNet'>
+  value: "UNet(\n  (image_proj): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1),\
+    \ padding=(1, 1))\n  (time_emb): TimeEmbedding(\n    (lin1): Linear(in_features=64,\
+    \ out_features=256, bias=True)\n    (act): Swish()\n    (lin2): Linear(in_features=256,\
+    \ out_features=256, bias=True)\n  )\n  (down): ModuleList(\n    (0): DownBlock(\n\
+    \      (res): ResidualBlock(\n        (norm1): GroupNorm(32, 64, eps=1e-05, affine=True)\n\
+    \        (act1): Swish()\n        (conv1): Conv2d(64, 64, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 64, eps=1e-05,\
+    \ affine=True)\n        (act2): Swish()\n        (conv2): Conv2d(64, 64, kernel_size=(3,\
+    \ 3), stride=(1, 1), padding=(1, 1))\n        (shortcut): Identity()\n       \
+    \ (time_emb): Linear(in_features=256, out_features=64, bias=True)\n      )\n \
+    \     (attn): Identity()\n    )\n    (1): DownBlock(\n      (res): ResidualBlock(\n\
+    \        (norm1): GroupNorm(32, 64, eps=1e-05, affine=True)\n        (act1): Swish()\n\
+    \        (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1,\
+    \ 1))\n        (norm2): GroupNorm(32, 64, eps=1e-05, affine=True)\n        (act2):\
+    \ Swish()\n        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1),\
+    \ padding=(1, 1))\n        (shortcut): Identity()\n        (time_emb): Linear(in_features=256,\
+    \ out_features=64, bias=True)\n      )\n      (attn): Identity()\n    )\n    (2):\
+    \ Downsample(\n      (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2),\
+    \ padding=(1, 1))\n    )\n    (3): DownBlock(\n      (res): ResidualBlock(\n \
+    \       (norm1): GroupNorm(32, 64, eps=1e-05, affine=True)\n        (act1): Swish()\n\
+    \        (conv1): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1,\
+    \ 1))\n        (norm2): GroupNorm(32, 128, eps=1e-05, affine=True)\n        (act2):\
+    \ Swish()\n        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1),\
+    \ padding=(1, 1))\n        (shortcut): Conv2d(64, 128, kernel_size=(1, 1), stride=(1,\
+    \ 1))\n        (time_emb): Linear(in_features=256, out_features=128, bias=True)\n\
+    \      )\n      (attn): Identity()\n    )\n    (4): DownBlock(\n      (res): ResidualBlock(\n\
+    \        (norm1): GroupNorm(32, 128, eps=1e-05, affine=True)\n        (act1):\
+    \ Swish()\n        (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1),\
+    \ padding=(1, 1))\n        (norm2): GroupNorm(32, 128, eps=1e-05, affine=True)\n\
+    \        (act2): Swish()\n        (conv2): Conv2d(128, 128, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (shortcut): Identity()\n        (time_emb):\
+    \ Linear(in_features=256, out_features=128, bias=True)\n      )\n      (attn):\
+    \ Identity()\n    )\n    (5): Downsample(\n      (conv): Conv2d(128, 128, kernel_size=(3,\
+    \ 3), stride=(2, 2), padding=(1, 1))\n    )\n    (6): DownBlock(\n      (res):\
+    \ ResidualBlock(\n        (norm1): GroupNorm(32, 128, eps=1e-05, affine=True)\n\
+    \        (act1): Swish()\n        (conv1): Conv2d(128, 256, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 256, eps=1e-05,\
+    \ affine=True)\n        (act2): Swish()\n        (conv2): Conv2d(256, 256, kernel_size=(3,\
+    \ 3), stride=(1, 1), padding=(1, 1))\n        (shortcut): Conv2d(128, 256, kernel_size=(1,\
+    \ 1), stride=(1, 1))\n        (time_emb): Linear(in_features=256, out_features=256,\
+    \ bias=True)\n      )\n      (attn): Identity()\n    )\n    (7): DownBlock(\n\
+    \      (res): ResidualBlock(\n        (norm1): GroupNorm(32, 256, eps=1e-05, affine=True)\n\
+    \        (act1): Swish()\n        (conv1): Conv2d(256, 256, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 256, eps=1e-05,\
+    \ affine=True)\n        (act2): Swish()\n        (conv2): Conv2d(256, 256, kernel_size=(3,\
+    \ 3), stride=(1, 1), padding=(1, 1))\n        (shortcut): Identity()\n       \
+    \ (time_emb): Linear(in_features=256, out_features=256, bias=True)\n      )\n\
+    \      (attn): Identity()\n    )\n    (8): Downsample(\n      (conv): Conv2d(256,\
+    \ 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))\n    )\n    (9): DownBlock(\n\
+    \      (res): ResidualBlock(\n        (norm1): GroupNorm(32, 256, eps=1e-05, affine=True)\n\
+    \        (act1): Swish()\n        (conv1): Conv2d(256, 1024, kernel_size=(3, 3),\
+    \ stride=(1, 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 1024, eps=1e-05,\
+    \ affine=True)\n        (act2): Swish()\n        (conv2): Conv2d(1024, 1024, kernel_size=(3,\
+    \ 3), stride=(1, 1), padding=(1, 1))\n        (shortcut): Conv2d(256, 1024, kernel_size=(1,\
+    \ 1), stride=(1, 1))\n        (time_emb): Linear(in_features=256, out_features=1024,\
+    \ bias=True)\n      )\n      (attn): AttentionBlock(\n        (norm): GroupNorm(32,\
+    \ 1024, eps=1e-05, affine=True)\n        (projection): Linear(in_features=1024,\
+    \ out_features=3072, bias=True)\n        (output): Linear(in_features=1024, out_features=1024,\
+    \ bias=True)\n      )\n    )\n    (10): DownBlock(\n      (res): ResidualBlock(\n\
+    \        (norm1): GroupNorm(32, 1024, eps=1e-05, affine=True)\n        (act1):\
+    \ Swish()\n        (conv1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1,\
+    \ 1), padding=(1, 1))\n        (norm2): GroupNorm(32, 1024, eps=1e-05, affine=True)\n\
+    \        (act2): Swish()\n        (conv2): Conv2d(1024, 1024, kerne [[...]]"
+image_channels:
+  computed: 3
+  is_explicitly_specified: true
+  is_hyperparam: null
+  is_meta: null
+  name: image_channels
+  options: []
+  order: 0
+  type: <class 'int'>
+  value: 3
+image_size:
+  computed: 32
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: image_size
+  options: []
+  order: 8
+  type: <class 'int'>
+  value: null
+is_attention:
+  computed:
+  - false
+  - false
+  - false
+  - true
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: is_attention
+  options: []
+  order: 3
+  type: typing.List[int]
+  value: null
+learning_rate:
+  computed: 2.0e-05
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: learning_rate
+  options: []
+  order: 10
+  type: <class 'float'>
+  value: null
+n_channels:
+  computed: 64
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: n_channels
+  options: []
+  order: 1
+  type: <class 'int'>
+  value: null
+n_samples:
+  computed: null
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: n_samples
+  options: []
+  order: -1
+  type: <class 'int'>
+  value: null
+n_steps:
+  computed: 1000
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: n_steps
+  options: []
+  order: 6
+  type: <class 'int'>
+  value: null
+optimizer:
+  computed: "Adam (\nParameter Group 0\n    amsgrad: False\n    betas: (0.9, 0.999)\n\
+    \    capturable: False\n    eps: 1e-08\n    foreach: None\n    lr: 2e-05\n   \
+    \ maximize: False\n    weight_decay: 0\n)"
+  is_explicitly_specified: false
+  is_hyperparam: null
+  is_meta: null
+  name: optimizer
+  options: []
+  order: 13
+  type: <class 'torch.optim.adam.Adam'>
+  value: "Adam (\nParameter Group 0\n    amsgrad: False\n    betas: (0.9, 0.999)\n\
+    \    capturable: False\n    eps: 1e-08\n    foreach: None\n    lr: 2e-05\n   \
+    \ maximize: False\n    weight_decay: 0\n)"

@@ -1,0 +1,1 @@
+{"status": "crashed", "rank": 0, "details": "Given groups=1, weight of size [64, 3, 3, 3], expected input[64, 1, 32, 32] to have 3 channels, but got 1 channels instead", "time": 1662784037.2343738}
