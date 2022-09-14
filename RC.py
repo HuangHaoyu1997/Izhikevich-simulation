@@ -1,20 +1,49 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import torchvision
-import os, time, torch, ray, pickle
+import os, time, torch, ray, pickle, random
 from scipy.linalg import pinv
 import torchvision.transforms as transforms
+from sklearn.metrics import accuracy_score
+from sklearn.linear_model import LogisticRegression
+import warnings
+
+warnings.filterwarnings("ignore")
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
+
+def spectral_radius(M):
+    '''
+    计算矩阵的谱半径
+    '''
+    a, b = np.linalg.eig(M) #a为特征值集合，b为特征值向量
+    return np.max(np.abs(a)) #返回谱半径
+
+def encoding(image, frames):
+    '''
+    image pixel value控制的随机分布编码
+    frames:动态帧长度
+    '''
+    sample = []
+    for _ in range(frames):
+        img = (image > torch.rand(image.size())).float().flatten().numpy()
+        sample.append(img)
+    return np.array(sample)
+
 class RC:
+    '''
+    Reservoir Computing Model
+    '''
     def __init__(self,
                  N_input, # 输入维度
                  N_hidden, # reservoir神经元数量
                  N_output, # 输出维度
-                 alpha, # 
-                 decay,
-                 threshold,
-                 
+                 alpha, # memory factor
+                 decay, # membrane potential decay factor
+                 threshold, # firing threshold
+                 R, # distance factor
+                 p, # 
+                 gamma,
                  ) -> None:
         self.N_in = N_input
         self.N_hid = N_hidden
@@ -22,16 +51,67 @@ class RC:
         self.alpha = alpha
         self.decay = decay
         self.thr = threshold
+        self.R = R
+        self.p = p
+        self.gamma = gamma
         self.reset()
+    
+    def initial(self, ):
+        '''
+        initialize random weights for matrix A
+        p: ratio of inhibitory neurons 抑制性
+        '''
+        length = self.N_hid * self.N_hid
+        V = self.allocation(X=10, Y=10, Z=10)
+        A = np.zeros((self.N_hid, self.N_hid), dtype=np.float32)
+        
+        for i in range(self.N_hid):
+            for j in range(self.N_hid):
+                # p_distance与distance成反比
+                p_distance = np.exp(-np.sqrt((V[i][0]-V[j][0])**2+
+                                             (V[i][1]-V[j][1])**2+
+                                             (V[i][2]-V[j][2])**2)*self.R
+                                   )
+                # connection
+                if np.random.rand() < p_distance:
+                    # 抑制性神经元
+                    if np.random.rand() < self.p:
+                        A[i,j] = -np.random.gamma(self.gamma)
+                    # 兴奋性神经元
+                    else:
+                        A[i,j] = np.random.gamma(self.gamma)
+        
+        # weights = []
+        # for _ in range(length):
+        #     if np.random.rand() < self.p:
+        #         weights.append(np.random.uniform(-1, 0))
+        #     else:
+        #         weights.append(np.random.uniform(0, 1))
+        
+        # weights = np.array(weights).reshape((self.N_hid, self.N_hid))
+        return A
         
     def reset(self,):
+        '''
+        random initialization:
+        W_in:      input weight matrix
+        A:         reservoir weight matrix
+        W_out:     readout weight matrix
+        r_history: state of reservoir neurons
+        mem:       membrane potential of reservoir neurons
+        
+        '''
         self.W_in = np.random.uniform(low=np.zeros((self.N_hid, self.N_in)), 
                                       high=np.ones((self.N_hid, self.N_in))*0.1)
-        self.A = np.random.uniform(low=-1*np.ones((self.N_hid, self.N_hid)), 
-                                   high=np.ones((self.N_hid, self.N_hid)))
+        
+        self.A = self.initial()
+        # self.A = np.random.uniform(low=-1*np.ones((self.N_hid, self.N_hid)), 
+        #                            high=np.ones((self.N_hid, self.N_hid)))
+        
         # 用系数0.0533缩放，以保证谱半径ρ(A)=1.0
         self.W_out = np.random.uniform(low=-0.0533*np.ones((self.N_out, self.N_hid)), 
                                        high=0.0533*np.ones((self.N_out, self.N_hid)))
+        
         self.r_history = np.zeros((self.N_hid))
         self.mem = np.zeros((self.N_hid))
         # self.spike = np.zeros((self.N_hid))
@@ -54,9 +134,24 @@ class RC:
         spike = np.array(mem>self.thr, dtype=np.float32)
         self.mem = mem
         return spike
-
+    
+    def allocation(self, X, Y, Z):
+        '''
+        randomly allocate coordinates for reservoir neurons
+        N_hid = X*Y*Z
+        '''
+        V = np.zeros((X, Y, Z), [('x', float), ('y', float), ('z', float)])
+        V['x'], V['y'], V['z'] = np.meshgrid(np.linspace(0, Y - 1, Y), 
+                                             np.linspace(0, X - 1, X),
+                                             np.linspace(0, Z - 1, Z))
+        V = V.reshape(X * Y * Z)
+        np.random.shuffle(V)
+        return V
+        
     def activation(self, x):
-        return np.tanh(x)
+        # return np.maximum(x, 0)
+        return 1/(1+np.exp(-x))
+        # return np.tanh(x)
     
     def softmax(self, x):
         return np.exp(x)/np.exp(x).sum()
@@ -64,6 +159,9 @@ class RC:
     def forward(self, x):
         '''
         一个样本的长度应该超过1,即由多帧动态数据构成
+        r.shape
+        y.shape
+        spike_train.shape (frame, N_hid)
         '''
         assert x.shape[0]>1
         spike_train = []
@@ -79,53 +177,99 @@ class RC:
             
         y = np.matmul(self.W_out, r)
         y = self.softmax(y)
-        return r, y, spike_train
+        return r, y, np.array(spike_train)
+
+def readout_sk(X_train, 
+               X_validation, 
+               # X_test, 
+               y_train, 
+               y_validation, 
+               # y_test,
+               ):
+    '''
+    X_train: shape(r_dim, num)
+    y_train: shape(num, )
+    
+    accuracy_score返回分类精度,最高=1
+    '''
+    lr = LogisticRegression(solver='lbfgs',
+                            multi_class='multinomial',
+                            verbose=False,
+                            max_iter=200,
+                            n_jobs=-1,
+                            
+                            )
+    lr.fit(X_train.T, y_train.T)
+    y_train_predictions = lr.predict(X_train.T)
+    y_validation_predictions = lr.predict(X_validation.T)
+    # y_test_predictions = lr.predict(X_test.T)
+    
+    
+    return accuracy_score(y_train_predictions, y_train.T), \
+            accuracy_score(y_validation_predictions, y_validation.T), \
+            # accuracy_score(y_test_predictions, y_test.T)
 
 def cross_entropy(p, q):
     '''
-    交叉熵
     CELoss = -∑ p(x)*log(q(x))
     '''
     return -(p * np.log(q)).sum()
 
-@ray.remote
+# @ray.remote
 def inference(model:RC,
               train_loader,
-              frames):
+              frames
+              ):
+    '''
+    给定数据集和模型, 推断reservoir state vector
+    '''
     rs = []
     start_time = time.time()
-    for i, (images, labels) in enumerate(train_loader):
-        images = encoding(images.squeeze(), frames) # shape=(30,784)
-        r, y, spike = model.forward(images)
+    labels = []
+    spikes = []
+    for i, (image, label) in enumerate(train_loader):
+        # static img -> random firing sequence
+        image = encoding(image.squeeze(), frames) # shape=(30,784)
+        
+        # spike.shape (frame, N_hid)=(5, 5000)
+        r, y, spike = model.forward(image)
+        spike_sum = spike.sum(0)
+        
+        # label_ = torch.zeros(batch_size, 10).scatter_(1, label.view(-1, 1), 1).squeeze().numpy()
+        # loss = cross_entropy(label_, outputs)
+        
         rs.append(r)
+        spikes.append(spike_sum)
+        labels.append(label.item())
         
-    print('Time elasped:', time.time()-start_time)
-    return np.array(rs)
+    print('Time elasped:', time.time() - start_time)
+    return np.array(rs), np.array(spikes), np.array(labels)
 
-@ray.remote
-def train(model:RC, 
-          solution,
-          train_loader, 
-          test_loader, 
-          batch_size, 
-          frames,
-          ):
-
-    model.W_out = solution.reshape(model.N_out, model.N_hid)
-    running_loss = 0
-    start_time = time.time()
+def learn(model, train_loader, frames):
     
-    for i, (images, labels) in enumerate(train_loader):
-        images = encoding(images.squeeze(), frames) # shape=(30,784)
-        r, outputs, _ = model.forward(images)
-        
-        labels_ = torch.zeros(batch_size, 10).scatter_(1, labels.view(-1, 1), 1).squeeze().numpy()
-        loss = cross_entropy(labels_, outputs)
-        running_loss += loss
-        
-    print('Time elasped:', time.time()-start_time)
-    return running_loss / len(train_loader)
-        
+    # rs.shape (500, 1000)
+    # labels.shape (500,)
+    rs, spikes, labels = inference(model,
+                            train_loader,
+                            frames,
+                            )
+    # print(spikes.shape, labels.shape)
+    train_rs = spikes[:300]
+    train_label = labels[:300]
+    test_rs = spikes[300:]
+    test_label = labels[300:]
+    # val_rs = spikes[400:]
+    # val_label = labels[400:]
+    tr_score, val_score, = readout_sk(train_rs.T, 
+                                    #   val_rs.T, 
+                                      test_rs.T, 
+                                      train_label, 
+                                    #   val_label, 
+                                      test_label)
+    print(tr_score, val_score)
+    return val_score
+
+
 '''
 correct = 0
 total = 0
@@ -159,40 +303,40 @@ if epoch % 5 == 0:
     torch.save(state, './checkpoint/ckpt' + names + '.t7')
     best_acc = acc
 '''
-def spectral_radius(M):
-    a,b = np.linalg.eig(M) #a为特征值集合，b为特征值向量
-    return np.max(np.abs(a)) #返回谱半径
 
-def encoding(image, frames):
-    '''
-    随机分布编码
-    frames:动态帧长度
-    '''
-    sample = []
-    for _ in range(frames):
-        img = (image > torch.rand(image.size())).float().flatten().numpy()
-        sample.append(img)
-    return np.array(sample)
 
-def MNIST_generation(batch_size):
+def MNIST_generation(train_num=1000, test_num=250, batch_size=1):
     '''
     生成随机编码的MNIST动态数据集
+    train_num: 训练集样本数
     '''
     
     train_dataset = torchvision.datasets.MNIST(root='./reservoir/data/', 
                                                train=True, 
                                                download=False, 
                                                transform=transforms.ToTensor())
+    
+    # 只取一部分数据
+    assert train_num<= len(train_dataset)
+    idx = random.sample(list(range(len(train_dataset))), train_num)
+    train_dataset.data = train_dataset.data[idx]
+    
     train_loader = torch.utils.data.DataLoader(train_dataset, 
                                                batch_size=batch_size, 
                                                shuffle=True, 
                                                num_workers=0)
 
-    test_set = torchvision.datasets.MNIST(root='./reservoir/data/', 
+    test_dataset = torchvision.datasets.MNIST(root='./reservoir/data/', 
                                           train=False, 
                                           download=False, 
                                           transform=transforms.ToTensor())
-    test_loader = torch.utils.data.DataLoader(test_set, 
+    
+    # 只取一部分数据
+    assert test_num<= len(test_dataset)
+    idx = random.sample(list(range(len(test_dataset))), test_num)
+    test_dataset.data = test_dataset.data[idx]
+    
+    test_loader = torch.utils.data.DataLoader(test_dataset, 
                                               batch_size=batch_size, 
                                               shuffle=False, 
                                               num_workers=0)
@@ -201,38 +345,49 @@ def MNIST_generation(batch_size):
 
 
 if __name__ == '__main__':
-    ray.init()
     
-    train_loader, test_loader = MNIST_generation(batch_size=1)
+    
+    # ray.init()
+    
+    train_loader, test_loader = MNIST_generation(train_num=500,
+                                                 test_num=250,
+                                                 batch_size=1)
     model = RC(N_input=28*28,
                N_hidden=1000,
                N_output=10,
-               alpha=0.2,
+               alpha=0.8,
                decay=0.5,
-               threshold=0.7,
+               threshold=1.0,
+               R=0.3,
+               p=0.25,
+               gamma=1.0,
+               
                )
-    from cma import CMAEvolutionStrategy
-    es = CMAEvolutionStrategy(x0=np.zeros((model.N_hid*model.N_out)),
-                                sigma0=0.5,
-                                #   inopts={
-                                #             'popsize':100,
-                                #           },
-                                )
-    N_gen = 100
-    for g in range(N_gen):
-        solutions = es.ask()
-        task_list = [train.remote(model,
-                                    solution,
-                                    train_loader, 
-                                    test_loader, 
-                                    batch_size=1,
-                                    frames=10,
-                                    ) for solution in solutions]
-        fitness = ray.get(task_list)
-        es.tell(solutions, fitness)
-        with open('ckpt_'+str(g)+'.pkl', 'wb') as f:
-            pickle.dump([solutions, fitness], f)
-        print(np.min(fitness))
+    
+    learn(model, train_loader, frames=10)
+    
+    # from cma import CMAEvolutionStrategy
+    # es = CMAEvolutionStrategy(x0=np.zeros((model.N_hid*model.N_out)),
+    #                             sigma0=0.5,
+    #                             #   inopts={
+    #                             #             'popsize':100,
+    #                             #           },
+    #                             )
+    # N_gen = 100
+    # for g in range(N_gen):
+    #     solutions = es.ask()
+    #     task_list = [train.remote(model,
+    #                                 solution,
+    #                                 train_loader, 
+    #                                 test_loader, 
+    #                                 batch_size=1,
+    #                                 frames=10,
+    #                                 ) for solution in solutions]
+    #     fitness = ray.get(task_list)
+    #     es.tell(solutions, fitness)
+    #     with open('ckpt_'+str(g)+'.pkl', 'wb') as f:
+    #         pickle.dump([solutions, fitness], f)
+    #     print(np.min(fitness))
     
     # labels = []
     # for i, (image, label) in enumerate(train_loader):
@@ -272,4 +427,4 @@ if __name__ == '__main__':
     # print(y, spike_train.shape)
     # plt.imshow(spike_train[:,0:100])
     # plt.pause(10)
-    ray.shutdown() 
+    # ray.shutdown() 

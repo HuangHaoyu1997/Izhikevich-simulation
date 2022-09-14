@@ -43,9 +43,9 @@ MNIST_shape = (1, 784)
 coding_duration = 30   # 编码序列的长度
 duration = coding_duration * MNIST_shape[0] # 30
 
-F_train = 0.05 # 60000*0.05=3000
-F_validation = 0.00833333 # 60000 * 0.00833333 = 500
-F_test = 0.05
+F_train = 0.001 # 60000*0.05=3000
+F_validation = 0.001 # 60000 * 0.00833333 = 500
+F_test = 0.0005
 Dt = defaultclock.dt = 1 * ms
 
 # -------class initialization----------------------
@@ -95,7 +95,6 @@ def run_net(inputs, **parameter):
 
     # ---- set numpy random state for each run----
     np.random.set_state(np_state)
-    print(len(inputs), inputs[1])
 
     # -----parameter setting-------
     n_ex = 1600             # 兴奋性神经元数量
@@ -349,7 +348,7 @@ if __name__ == '__main__':
         saes = SAES(f=parameters_search, 
                     acquisition='ei', 
                     x0=parameters, 
-                    sigma0=0.5,
+                    sigma=0.5,
                     **{'ftarget': -1e+3, 
                        'bounds': bounds, 
                        'maxiter': 500,

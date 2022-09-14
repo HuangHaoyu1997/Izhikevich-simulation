@@ -145,6 +145,7 @@ class Readout():
         '''
         accuracy_score返回分类精度,最高=1
         '''
+        print('aaaa:', kwargs)
         lr = LogisticRegression(**kwargs)
         lr.fit(X_train.T, y_train.T)
         y_train_predictions = lr.predict(X_train.T)
