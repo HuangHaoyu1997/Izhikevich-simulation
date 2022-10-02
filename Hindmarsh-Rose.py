@@ -62,14 +62,16 @@ if __name__ == '__main__':
         'c': 1., 
         'd': 5., 
         's': 4., 
-        'r': 10e-3,
+        'r': 0.001,
         'xR': -8/5,
     }
-    T = 10000
-    model = HR(params, dt=0.005)
+    T = 1000
+    model = HR(params, dt=0.1)
     for i in range(T):
-        model.step(I=2) # np.random.uniform(0,1)
+        model.step(I=2 if i<500 else 0) # np.random.uniform(0,1)
     
     plt.plot(model.xs)
-    plt.plot(np.array(model.xs)>2.0,'.')
+    plt.plot(model.xs[np.array(model.xs)>2.3],'.')
+    plt.grid()
     plt.savefig('HR.png')
+    print((np.array(model.xs)>2.3).sum())
