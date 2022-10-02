@@ -60,6 +60,9 @@ class RC:
         '''
         initialize random weights for matrix A
         p: ratio of inhibitory neurons 抑制性
+        R: distance factor
+        gamma: shape factor of gamma distribution
+        
         '''
         length = self.N_hid * self.N_hid
         V = self.allocation(X=10, Y=10, Z=10)
