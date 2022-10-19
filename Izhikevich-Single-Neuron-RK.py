@@ -20,7 +20,7 @@ method = 'RK1' # 数值模拟方法
 sim_time = 500 # 仿真时间
 
 II = amplitude*np.ones((sim_time),dtype=np.float) # 直流输入
-II[0:100] = 0 # 前100ms电流为0
+II[0: 100] = 0 # 前100ms电流为0
 
 def function(value,I):
     '''
